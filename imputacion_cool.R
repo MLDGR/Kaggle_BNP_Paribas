@@ -59,9 +59,11 @@ for(i in 1:ncol(test)){
   }
 }
 
-load("~/Proyectos/Kaggle/BNP/Particiones/folds.RData")
-train=train[folds[[1]],]
-test=train[-folds[[1]],]
+#load("~/Proyectos/Kaggle/BNP/Particiones/folds.RData")
+#train=train[folds[[1]],]
+#test=train[-folds[[1]],]
+
+unicos=rbind(train[,-ncol(train)],test)
 
 imputacion=function(train){  
   no.na.train=train[-which(apply(train,1,function(i)any(is.na(i)))),]
@@ -85,13 +87,13 @@ imputacion=function(train){
     }
     return(train[i,])
   },mc.preschedule = TRUE, mc.set.seed = TRUE,
-  mc.silent = FALSE, mc.cores = getOption("mc.cores", 1L),
+  mc.silent = FALSE, mc.cores = getOption("mc.cores", 6L),
   mc.cleanup = TRUE, mc.allow.recursive = TRUE)
   imputados=matrix(unlist(imputados),nrow=length(imputados),ncol=ncol(train),byrow=T) #Hay que cambiar el ncol=133
 }
 
-test=imputacion(test)
-save(test,file="test.RData")
+unicos=imputacion(unicos)
+save(unicos,file="unicos.RData")
 
 
 
